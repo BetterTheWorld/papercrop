@@ -1,10 +1,10 @@
 module Papercrop
   module Helpers
-    
+
     # Form helper to render the cropping preview box of an attachment.
-    # Box width can be handled by setting the :width option. 
+    # Box width can be handled by setting the :width option.
     # Width is 100 by default. Height is calculated by the aspect ratio.
-    # 
+    #
     #   crop_preview :avatar
     #   crop_preview :avatar, :width => 150
     #
@@ -13,7 +13,7 @@ module Papercrop
     def crop_preview(attachment, opts = {})
       attachment = attachment.to_sym
       width      = opts[:width] || 100
-      height     = (width / self.object.send(:"#{attachment}_aspect")).round 
+      height     = (width / self.object.send(:"#{attachment}_aspect")).round
 
       if self.object.send(attachment).class == Paperclip::Attachment
         wrapper_options = {
@@ -41,6 +41,8 @@ module Papercrop
       original_width  = self.object.image_geometry(attachment, :original).width
       original_height = self.object.image_geometry(attachment, :original).height
       box_width       = opts[:width] || original_width
+      min_width       = opts[:min_width] || nil
+      min_height      = opts[:min_height] || nil
 
       if self.object.send(attachment).class == Paperclip::Attachment
         box  = self.hidden_field(:"#{attachment}_original_w", :value => original_width)
@@ -51,7 +53,7 @@ module Papercrop
           box << self.hidden_field(:"#{attachment}_#{attribute}", :id => "#{attachment}_#{attribute}")
         end
 
-        crop_image = @template.image_tag(self.object.send(attachment).url)
+        crop_image = @template.image_tag(self.object.send(attachment).url, :data => { :min_width => min_width, :min_height => min_height })
 
         box << @template.content_tag(:div, crop_image, :id => "#{attachment}_cropbox")
       end
