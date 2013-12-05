@@ -53,9 +53,9 @@ module Papercrop
           box << self.hidden_field(:"#{attachment}_#{attribute}", :id => "#{attachment}_#{attribute}")
         end
 
-        crop_image = @template.image_tag(self.object.send(attachment).url, :data => { :min_width => min_width, :min_height => min_height })
+        crop_image = @template.image_tag(self.object.send(attachment).url)
 
-        box << @template.content_tag(:div, crop_image, :id => "#{attachment}_cropbox")
+        box << @template.content_tag(:div, crop_image, :id => "#{attachment}_cropbox", :data => { :min_width => min_width, :min_height => min_height })
       end
     end
   end
